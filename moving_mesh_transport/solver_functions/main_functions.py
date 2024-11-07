@@ -36,6 +36,8 @@ from timeit import default_timer as timer
 from .wavespeed_estimator import wavespeed_estimator
 from .wave_loc_estimator import find_wave
 import chaospy
+import scipy
+# from diffeqpy import ode
 # from .jl_integrator import integrator as jl_integrator_func
 # from diffeqpy import de
 
@@ -140,6 +142,7 @@ def solve(tfinal, N_space, N_ang, M, x0, t0, sigma_t, sigma_s, t_nodes, source_t
 
     # t_quad = quadpy.c1.gauss_legendre(t_nodes).points
     t_quad, t_ws = quadrature(t_nodes, 'gauss_legendre')
+    print(t_quad, 't quad')
 
     # t_ws = quadpy.c1.gauss_legendre(t_nodes).weights
     half = int((N_space + 1)/2)
@@ -202,6 +205,7 @@ def solve(tfinal, N_space, N_ang, M, x0, t0, sigma_t, sigma_s, t_nodes, source_t
     sigma_class = sigma_integrator(initialize)
     flux.load_AAA(sigma_class.AAA)
     
+    # @njit
     def RHS(t, V):
         return rhs.call(t, V, mesh, matrices, num_flux, source, uncollided_sol, flux, transfer, sigma_class)
     
@@ -219,7 +223,29 @@ def solve(tfinal, N_space, N_ang, M, x0, t0, sigma_t, sigma_s, t_nodes, source_t
 
     # sol_JL = jl_integrator_func(RHS, IC, (0, tfinal), tpnts)
 
-    sol = integrate.solve_ivp(RHS, [0.0,tfinal], reshaped_IC, method=integrator, t_eval = tpnts , rtol = rt, atol = at, max_step = mxstp, min_step = 1e-7)
+    # sol = integrate.solve_ivp(RHS, [0.0,tfinal], reshaped_IC, method=integrator, t_eval = tpnts , rtol = rt, atol = at, max_step = mxstp, min_step = 1e-7)
+    if integrator == 'BDF_VODE':
+        ode15s = scipy.integrate.ode(RHS)
+        ode15s.set_integrator('lsoda', method='bdf', atol = 1e-8, rtol = 1e-6)
+        ode15s.set_initial_value(reshaped_IC, 0.0)
+        sol = sol_class_ode_solver(ode15s.y, ode15s.t, np.array(tpnts))
+
+        for it in range(len(tpnts)):
+            
+            tf = tpnts[it]
+            # print(tf, 'next integration target time')
+            # with stdout_redirected():
+            ode15s.integrate(tf)
+            sol.y[:,it] = ode15s.y
+            ode15s.set_initial_value(ode15s.y, tf)
+
+        
+    else:
+        sol = integrate.solve_ivp(RHS, [0.0,tfinal], reshaped_IC, method=integrator, t_eval = tpnts , rtol = rt, atol = at, max_step = mxstp)
+
+    # sol = ode15s.y
+
+
     print(sol.status, 'solution status')
     print(sol)
     if sol.status != 0:
@@ -379,3 +405,12 @@ def mesh_dry_run(mesh, tfinal):
         mesh.move(tt)
     print('mesh dry run complete')
     mesh.move(0.0)
+
+
+class sol_class_ode_solver():
+    def __init__(self, y, t, tpnts):
+        self.y = np.zeros(( y.size, tpnts.size,))
+        self.y[:,0] = y
+        self.t = tpnts
+        self.status = 1
+        self.message = 'sup'
