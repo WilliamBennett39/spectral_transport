@@ -73,7 +73,7 @@ MM = 1
 N_ang = 8
 # N_spaces_list = [10, 15, 20, 25, 50, 75, 100, 150, 200, 500, 1000]
 # N_spaces_list = [10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-N_spaces_list = [500]
+N_spaces_list = [400]
 
 run = run()
 run.load()
@@ -95,17 +95,19 @@ for it, N_space in enumerate(N_spaces_list):
     run.parameters['all']['rt'] = 1e-6
     run.parameters['all']['at'] = 1e-8
     # run.parameters['all']['at'] = 5e-1
-    run.parameters['all']['e_initial'] = 0.0
+    run.parameters['all']['e_initial'] = 0.00000
     run.parameters['boundary_source']['N_angles'] = [N_ang]
     run.parameters['all']['Ms'] = [MM]
     run.mesh_parameters['Msigma'] = MM
+    run.parameters['integrator'] = 'BDF_VODE'
+    print(run.parameters['integrator'], 'integrator methods')
 
     menis_times = np.array([-94.706889, -27.126998, -1])
     # menis_times = np.array([-1])
     # menis_times = np.array([-140, -94.706889, -27.126998])
     # menis_times = np.array([-140, -100, -94.706889])
     # menis_times = np.array([-145, -140, -135])
-    # menis_times = np.array([-145, -144, -143])
+    # menis_times = np.array([-145, -144.5, -144])
 
     dimensional_times =  145.4733877 + menis_times 
 
@@ -119,7 +121,7 @@ for it, N_space in enumerate(N_spaces_list):
     # run.mesh_parameters['eval_times'] = False
 
     run.boundary_source(0,0)
-    f = h5py.File('converging_heat/results_test4_11-8.h5','r+')
+    f = h5py.File('converging_heat/results_test4_1030.h5','r+')
     M = run.parameters['all']['Ms'] 
     spaces = run.parameters['all']['N_spaces']
     if f.__contains__(f'M={M}_{spaces}_cells'):
