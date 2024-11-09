@@ -99,7 +99,7 @@ for it, N_space in enumerate(N_spaces_list):
     run.parameters['boundary_source']['N_angles'] = [N_ang]
     run.parameters['all']['Ms'] = [MM]
     run.mesh_parameters['Msigma'] = MM
-    run.parameters['integrator'] = 'BDF_VODE'
+    run.parameters['integrator'] = 'BDF'
     print(run.parameters['integrator'], 'integrator methods')
 
     menis_times = np.array([-94.706889, -27.126998, -1])
