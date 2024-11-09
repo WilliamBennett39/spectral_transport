@@ -226,7 +226,7 @@ def solve(tfinal, N_space, N_ang, M, x0, t0, sigma_t, sigma_s, t_nodes, source_t
     # sol = integrate.solve_ivp(RHS, [0.0,tfinal], reshaped_IC, method=integrator, t_eval = tpnts , rtol = rt, atol = at, max_step = mxstp, min_step = 1e-7)
     if integrator == 'BDF_VODE':
         ode15s = scipy.integrate.ode(RHS)
-        ode15s.set_integrator('lsoda', method='bdf', atol = 1e-8, rtol = 1e-6)
+        ode15s.set_integrator('lsoda', method='bdf', atol = at, rtol = rt)
         ode15s.set_initial_value(reshaped_IC, 0.0)
         sol = sol_class_ode_solver(ode15s.y, ode15s.t, np.array(tpnts))
 
