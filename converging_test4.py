@@ -73,7 +73,7 @@ MM = 1
 N_ang = 6
 # N_spaces_list = [10, 15, 20, 25, 50, 75, 100, 150, 200, 500, 1000]
 # N_spaces_list = [10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-N_spaces_list = [600]
+N_spaces_list = [500]
 
 run = run()
 run.load()
@@ -92,8 +92,8 @@ run.load('marshak')
 for it, N_space in enumerate(N_spaces_list):
     run.parameters['boundary_source']['x0'] = np.array([10.0])
     run.parameters['all']['N_spaces'] = [N_space]
-    run.parameters['all']['rt'] = 1e-6
-    run.parameters['all']['at'] = 1e-8
+    run.parameters['all']['rt'] = 1e-4
+    run.parameters['all']['at'] = 1e-5
     # run.parameters['all']['at'] = 5e-1
     run.parameters['all']['e_initial'] = 0.00000
     run.parameters['boundary_source']['N_angles'] = [N_ang]
