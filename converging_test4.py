@@ -73,7 +73,7 @@ MM = 1
 N_ang = 6
 # N_spaces_list = [10, 15, 20, 25, 50, 75, 100, 150, 200, 500, 1000]
 # N_spaces_list = [10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-N_spaces_list = [500]
+N_spaces_list = [600]
 
 run = run()
 run.load()
@@ -99,14 +99,14 @@ for it, N_space in enumerate(N_spaces_list):
     run.parameters['boundary_source']['N_angles'] = [N_ang]
     run.parameters['all']['Ms'] = [MM]
     run.mesh_parameters['Msigma'] = MM
-    run.parameters['integrator'] = 'BDF_VODE'
+    run.parameters['integrator'] = 'BDF'
     print(run.parameters['integrator'], 'integrator methods')
 
     # menis_times = np.array([-94.706889, -27.126998, -1])
     # menis_times = np.array([-1])
     # menis_times = np.array([-140, -94.706889, -27.126998])
-    # menis_times = np.array([-140, -100, -94.706889])
-    menis_times = np.array([-145, -140, -135])
+    menis_times = np.array([-140, -100, -94.706889])
+    # menis_times = np.array([-145, -140, -135])
     # menis_times = np.array([-145, -144.5, -144])
 
     dimensional_times =  145.4733877 + menis_times 
