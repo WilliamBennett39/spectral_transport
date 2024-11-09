@@ -100,9 +100,9 @@ for it, N_space in enumerate(N_spaces_list):
     run.parameters['all']['Ms'] = [MM]
     run.mesh_parameters['Msigma'] = MM
 
-    # menis_times = np.array([-94.706889, -27.126998, -1])
+    menis_times = np.array([-94.706889, -27.126998, -1])
     # menis_times = np.array([-1])
-    menis_times = np.array([-140, -94.706889, -27.126998])
+    # menis_times = np.array([-140, -94.706889, -27.126998])
     # menis_times = np.array([-140, -100, -94.706889])
     # menis_times = np.array([-145, -140, -135])
     # menis_times = np.array([-145, -144, -143])
